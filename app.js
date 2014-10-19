@@ -26,7 +26,11 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', C_main.index);
+app.get('/', function(req, res){
+    res.send("got it!");
+})
+app.get('/create', C_main.createMessage);
+app.get('/get', C_main.getMessage);
 app.get('/test/:name', C_test.name);
 
 /// catch 404 and forward to error handler

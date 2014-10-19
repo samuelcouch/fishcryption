@@ -1,19 +1,17 @@
 var bcrypt = require('bcrypt'),
     ObjectId = require('mongodb').ObjectID,
     request = require('request'),
-    twilio = require('twilio')(accountSid, authToken);
+    twilio = require('twilio')('AC7700c1b3e8edc60b0d1e6dc48177a947', '5390a070b67e8a6117bad0c548fd09c8');
 
 
 exports.index = function(req, res) {
   res.send('Index page!')
 };
 
-exports.route = function(app) {
-
-    app.post('/createMessage', function(req, res) {
+exports.createMessage = function(req, res) {
         var number = req.body.number;
         var msg = req.body.msg;
-        if (!username) {
+        if (!msg) {
             res.status(400).send('Goddammit give me a goddamn email');
         } else {
             var fish_url = "http://api.fishplayspokemon.com/position";
@@ -44,23 +42,22 @@ exports.route = function(app) {
                 }
             });
         }
-    });
+    }
 
-    app.post('/retrieveMessage', function(req, res){
-        var salt = req.body.salt;
-        var ID = req.body.ID;
-        userObjectID = new ObjectID(ID);
-        db.collection('messages').find({
-            _id: userObjectID
-        }).toArray(function(err, message) {
-            if (err) {
-                res.status(500).send("goddammit");
-            } else {
-                var decipher = crypto.createDecipher('aes256', salt);
-                var decrypted = decipher.update(message[0].message, 'hex', 'utf8') + decipher.final('utf8');
+exports.getMessage = function(req, res){
+    var salt = req.body.salt;
+    var ID = req.body.ID;
+    userObjectID = new ObjectID(ID);
+    db.collection('messages').find({
+        _id: userObjectID
+    }).toArray(function(err, message) {
+        if (err) {
+            res.status(500).send("goddammit");
+        } else {
+            var decipher = crypto.createDecipher('aes256', salt);
+            var decrypted = decipher.update(message[0].message, 'hex', 'utf8') + decipher.final('utf8');
 
-                res.status(200).send(decrypted);
-            }
-        });
+            res.status(200).send(decrypted);
+        }
     });
 }
